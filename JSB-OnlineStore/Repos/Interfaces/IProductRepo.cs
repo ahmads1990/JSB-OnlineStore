@@ -8,6 +8,7 @@ public interface IProductRepo
     Task<Product?> GetProductByIDAsync(int id);
     Task<Product> CreateProductAsync(Product product);
     Task UpdateProductAsync(int id, Product product);
+    Task CheckAndUpdateProductsStock(OrderItem orderItem, int newQuantity);
     Task CheckAndUpdateProductsStock(List<OrderItem> orderItems);
     Task DeleteProductAsync(int id);
 }

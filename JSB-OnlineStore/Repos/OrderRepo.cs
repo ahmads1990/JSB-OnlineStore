@@ -22,9 +22,10 @@ public class OrderRepo : IOrderRepo
     {
         return await _appDbContext.Orders.FirstOrDefaultAsync(o => o.OrderID == id);
     }
-    public Task<Order> CreateOrderAsync(Order order)
+    public async Task<Order> CreateOrderAsync(Order order)
     {
-        throw new NotImplementedException();
+        var result = await _appDbContext.Orders.AddAsync(order);
+        return result.Entity;
     }
     public Task UpdateOrderAsync(int id, Order order)
     {

@@ -44,6 +44,31 @@ public class ProductRepo : IProductRepo
         _appDbContext.Products.Update(existingProduct);
         await _appDbContext.SaveChangesAsync();
     }
+    public async Task CheckAndUpdateProductsStock(OrderItem orderItem, int newQuantity)
+    {
+        var productOrdered = await _appDbContext.Products
+             .FirstOrDefaultAsync(product => product.ProductID == orderItem.ProductID);
+
+        if (productOrdered is null)
+            throw new Exception($"Order product can't be found invalid ID: [{orderItem.ProductID}]");
+
+        // Check if there is enough stock for the ordered quantity
+        var productStockChange = orderItem.Quantity - newQuantity;
+
+        // Add add back to product stock
+        if (productStockChange > 0)
+            productOrdered.Stock += productStockChange;
+        else if (productStockChange < 0)
+        {
+            var requiredStock = Math.Abs(productStockChange);
+            if (productOrdered.Stock < requiredStock)
+                throw new Exception($"Not enough stock for Product ID: {productOrdered.ProductID}. Available: {productOrdered.Stock}, Ordered: {newQuantity}");
+
+            // Take from stock
+            productOrdered.Stock -= requiredStock;
+        }
+        await _appDbContext.SaveChangesAsync();
+    }
     public async Task CheckAndUpdateProductsStock(List<OrderItem> orderItems)
     {
         var orderProductIDs = orderItems.Select(item => item.ProductID);

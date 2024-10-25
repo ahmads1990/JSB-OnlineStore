@@ -1,4 +1,4 @@
-﻿using JSB_OnlineStore.Dtos;
+﻿using JSB_OnlineStore.Dtos.Product;
 using JSB_OnlineStore.Models;
 using JSB_OnlineStore.Repos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
