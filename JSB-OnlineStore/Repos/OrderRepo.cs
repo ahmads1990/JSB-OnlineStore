@@ -27,12 +27,31 @@ public class OrderRepo : IOrderRepo
         var result = await _appDbContext.Orders.AddAsync(order);
         return result.Entity;
     }
-    public Task UpdateOrderAsync(int id, Order order)
+    public async Task UpdateOrderAsync(int id, Order order)
     {
-        throw new NotImplementedException();
+        var existingOrder = await GetOrderByIDAsync(id);
+
+        if (existingOrder is null)
+            throw new Exception($"Order not found for ID: {id}");
+
+        existingOrder.CustomerID = order.CustomerID;
+        foreach (var orderItem in order.Items)
+        {
+            existingOrder.Items
+                .First(i => i.OrderItemID == orderItem.OrderItemID)
+                .Quantity = orderItem.Quantity;
+        }
+
+        _appDbContext.Orders.Update(existingOrder);
+        await _appDbContext.SaveChangesAsync();
     }
-    public Task DeleteOrderAsync(int id)
+    public async Task DeleteOrderAsync(int id)
     {
-        throw new NotImplementedException();
+        var existingOrder = await GetOrderByIDAsync(id);
+
+        if (existingOrder is null)
+            throw new Exception($"Order not found for ID: {id}");
+
+        _appDbContext.Orders.Remove(existingOrder);
     }
 }

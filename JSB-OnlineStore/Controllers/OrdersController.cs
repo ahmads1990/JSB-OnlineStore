@@ -93,11 +93,12 @@ public class OrdersController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteProduct(int productID)
+    public async Task<IActionResult> DeleteOrder(int orderID)
     {
         try
         {
-            await _productRepo.DeleteProductAsync(productID);
+            // TODO logic to manage product stock
+            await _orderRepo.DeleteOrderAsync(orderID);
         }
         catch (Exception)
         {
