@@ -22,7 +22,7 @@ public class ProductRepo : IProductRepo
     {
         return await _appDbContext.Products
                      .AsNoTracking()
-                     .FirstOrDefaultAsync();
+                     .FirstOrDefaultAsync(p => p.ProductID == id);
     }
     public async Task<Product> CreateProductAsync(Product product)
     {
